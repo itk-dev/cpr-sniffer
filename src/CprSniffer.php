@@ -10,6 +10,8 @@ namespace ItkDev\CprSniffer;
 
 /**
  * Class CprSniffer.
+ *
+ * Check a string for CPR resemblance.
  */
 class CprSniffer
 {
