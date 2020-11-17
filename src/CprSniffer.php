@@ -106,7 +106,7 @@ class CprSniffer
     /**
      * Check against modulo 11.
      *
-     * @param $array
+     * @param array $array
      *   An array of characters
      * @param $number
      *   A string that could be a CPR number
