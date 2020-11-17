@@ -46,7 +46,8 @@ class CprSniffer
      * @param $string
      *   The string to check
      *
-     * @return bool true if string contains a number that could be considered cpr
+     * @return bool 
+     *   True if string contains a number that could be considered cpr
      */
     public function checkCpr($string)
     {
