@@ -108,7 +108,7 @@ class CprSniffer
      *
      * @param array $array
      *   An array of characters
-     * @param $number
+     * @param string $number
      *   A string that could be a CPR number
      *
      * @return bool True if the characters in union resemble a CPR number
