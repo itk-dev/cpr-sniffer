@@ -96,7 +96,7 @@ class CprSniffer
      *
      * @return array the created array of characters
      */
-    private function stringSplit($numString)
+    private function stringSplit(string $numString): array
     {
         $array = [];
         for ($i = 0; $i < \strlen($numString); ++$i) {
