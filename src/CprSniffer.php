@@ -88,7 +88,7 @@ class CprSniffer
     /**
      * Create an array from a string.
      *
-     * @param $numString
+     * @param string $numString
      *   A string to create an array from
      *
      * @return array the created array of characters
