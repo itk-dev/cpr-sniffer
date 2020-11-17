@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 /*
- * This file is part of itk-dev/cpr-sniffer.
- * (c) 2020 ITK Development
+ * This file is part of itk-dev/user-bundle.
+ *
+ * (c) 2019 ITK Development
+ *
  * This source file is subject to the MIT license.
  */
 
@@ -45,11 +47,9 @@ class CprSniffer
     /**
      * Check if string contains valid CPR.
      *
-     * @param string $string
-     *   The string to check
+     * @param string $string The string to check
      *
-     * @return bool 
-     *   True if string contains a number that could be considered cpr
+     * @return bool True if string contains a number that could be considered cpr
      */
     public function checkCpr(string $string): bool
     {
@@ -78,7 +78,7 @@ class CprSniffer
             }
 
             // Prepare number for modulo 11 check.
-            $arr = $this->stringSplit($number);
+            $arr = str_split($number);
 
             if ($this->mod11Chk($arr, $number) && $this->dateChk($number)) {
                 return true;
@@ -89,34 +89,12 @@ class CprSniffer
     }
 
     /**
-     * Create an array from a string.
-     *
-     * @param string $numString
-     *   A string to create an array from
-     *
-     * @return array<string>
-     *   The created array of characters
-     */
-    private function stringSplit(string $numString): array
-    {
-        $array = [];
-        for ($i = 0; $i < \strlen($numString); ++$i) {
-            $array[$i] = substr($numString, $i, 1);
-        }
-
-        return $array;
-    }
-
-    /**
      * Check against modulo 11.
      *
-     * @param array $array
-     *   An array of characters
-     * @param string $number
-     *   A string that could be a CPR number
+     * @param array  $array  An array of characters
+     * @param string $number A string that could be a CPR number
      *
-     * @return bool 
-     *   True if the characters in union resemble a CPR number
+     * @return bool True if the characters in union resemble a CPR number
      */
     private function mod11Chk(array $array, string $number): bool
     {
@@ -166,11 +144,9 @@ class CprSniffer
     /**
      * Check against valid date.
      *
-     * @param string $number
-     *   A string that could be a CPR number
+     * @param string $number A string that could be a CPR number
      *
-     * @return bool return 
-     *   True if it's considered a date
+     * @return bool return True if it's considered a date
      */
     private function dateChk(string $number): bool
     {
