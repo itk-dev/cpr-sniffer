@@ -94,7 +94,8 @@ class CprSniffer
      * @param string $numString
      *   A string to create an array from
      *
-     * @return array the created array of characters
+     * @return array<string>
+     *   The created array of characters
      */
     private function stringSplit(string $numString): array
     {
