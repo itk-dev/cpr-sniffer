@@ -117,7 +117,7 @@ class CprSniffer
      * @return bool 
      *   True if the characters in union resemble a CPR number
      */
-    private function mod11Chk($array, $number)
+    private function mod11Chk(array $array, string $number): bool
     {
         if (\in_array(substr($number, 0, 6), $this->noModuloCheckNumbers)) {
             return true;
