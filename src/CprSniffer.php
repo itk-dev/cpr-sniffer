@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of itk-dev/cpr-sniffer.
  * (c) 2020 ITK Development
