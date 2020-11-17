@@ -161,7 +161,7 @@ class CprSniffer
     /**
      * Check against valid date.
      *
-     * @param $number
+     * @param string $number
      *   A string that could be a CPR number
      *
      * @return bool return 
