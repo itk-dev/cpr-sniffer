@@ -167,7 +167,7 @@ class CprSniffer
      * @return bool return 
      *   True if it's considered a date
      */
-    private function dateChk($number)
+    private function dateChk(string $number): bool
     {
         $day = substr($number, 0, 2);
         $month = substr($number, 2, 2);
