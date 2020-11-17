@@ -43,7 +43,7 @@ class CprSniffer
     /**
      * Check if string contains valid CPR.
      *
-     * @param $string
+     * @param string $string
      *   The string to check
      *
      * @return bool 
