@@ -164,7 +164,8 @@ class CprSniffer
      * @param $number
      *   A string that could be a CPR number
      *
-     * @return bool return True if it's considered a date
+     * @return bool return 
+     *   True if it's considered a date
      */
     private function dateChk($number)
     {
