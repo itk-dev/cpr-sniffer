@@ -114,7 +114,8 @@ class CprSniffer
      * @param string $number
      *   A string that could be a CPR number
      *
-     * @return bool True if the characters in union resemble a CPR number
+     * @return bool 
+     *   True if the characters in union resemble a CPR number
      */
     private function mod11Chk($array, $number)
     {
