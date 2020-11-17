@@ -49,7 +49,7 @@ class CprSniffer
      * @return bool 
      *   True if string contains a number that could be considered cpr
      */
-    public function checkCpr($string)
+    public function checkCpr(string $string): bool
     {
         if (empty($string)) {
             return false;
