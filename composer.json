@@ -1,5 +1,5 @@
 {
-    "name": "itk-dev/cpr-sniffer",
+    "name": "itk-dev/cpr-validator",
     "license": "MIT",
     "authors": [
         {
@@ -9,11 +9,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "ItkDev\\CprSniffer\\": "src/"
+            "ItkDev\\CprValidator\\": "src/"
         }
     },
     "require": {
-        "php": "^7.3"
+        "php": "^7.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.15"

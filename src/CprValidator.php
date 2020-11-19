@@ -10,20 +10,20 @@ declare(strict_types=1);
  * This source file is subject to the MIT license.
  */
 
-namespace ItkDev\CprSniffer;
+namespace ItkDev\CprValidator;
 
 /**
  * Class CprSniffer.
  *
  * Check a string for CPR resemblance.
  */
-class CprSniffer
+class CprValidator
 {
     // Due to lacking capacity of valid modulo 11 numbers some years, there are
     // valid CPR numbers that don't pass modulo 11 check. In those cases we just
     // return true.
-    // https://cpr.dk/cpr-systemet/personnumre-uden-kontrolciffer-modulus-11-kontrol/
-    private $noModuloCheckNumbers = [
+    // @See https://cpr.dk/cpr-systemet/personnumre-uden-kontrolciffer-modulus-11-kontrol/
+    private array $noModuloCheckNumbers = [
         '010160',
         '010164',
         '010165',
@@ -47,19 +47,21 @@ class CprSniffer
     /**
      * Check if string contains valid CPR.
      *
-     * @param string $string The string to check
+     * @param string $cpr
+     *   The string to check
      *
-     * @return bool True if string contains a number that could be considered cpr
+     * @return bool
+     *   True if string contains a number that could be considered cpr
      */
-    public function checkCpr(string $string): bool
+    public function checkCpr(string $cpr): bool
     {
-        if (empty($string)) {
+        if (empty($cpr)) {
             return false;
         }
 
         // Remove spaces and dashes to prepare for a simpler regex.
         // This way we check 3 formats 1234561234, 123456-1234 and 123456 1234.
-        $stringConcatenated = str_replace(['-', ' '], '', $string);
+        $stringConcatenated = str_replace(['-', ' '], '', $cpr);
 
         // Search the concatenated string for 10 digits in a row.
         $numberFound = preg_match('/(^|\D)\d{10}($|\D)/', $stringConcatenated, $result);
@@ -91,14 +93,17 @@ class CprSniffer
     /**
      * Check against modulo 11.
      *
-     * @param array  $array  An array of characters
-     * @param string $number A string that could be a CPR number
+     * @param array  $array
+     *   An array of characters
+     * @param string $cpr
+     *   A string that could be a CPR number
      *
-     * @return bool True if the characters in union resemble a CPR number
+     * @return bool
+     *   True if the characters in union resemble a CPR number
      */
-    private function mod11Chk(array $array, string $number): bool
+    private function mod11Chk(array $array, string $cpr): bool
     {
-        if (\in_array(substr($number, 0, 6), $this->noModuloCheckNumbers)) {
+        if (\in_array(substr($cpr, 0, 6), $this->noModuloCheckNumbers)) {
             return true;
         }
         // Check each digit against it's weight.
@@ -136,17 +141,19 @@ class CprSniffer
         // Check the sum against modulo 11, if remainder is 0 the number resembles CPR.
         if (0 === $value % 11) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
      * Check against valid date.
      *
-     * @param string $number A string that could be a CPR number
+     * @param string $number
+     *   A string that could be a CPR number
      *
-     * @return bool return True if it's considered a date
+     * @return bool return
+     *   True if it's considered a date
      */
     private function dateChk(string $number): bool
     {
@@ -155,10 +162,11 @@ class CprSniffer
         $year = substr($number, 4, 2);
 
         if ($year < 21) {
-            $year = '20'.$year;
+            $prefix = '20';
         } else {
-            $year = '19'.$year;
+            $prefix = '19';
         }
+        $year = $prefix.$year;
 
         return checkdate($month, $day, $year);
     }
