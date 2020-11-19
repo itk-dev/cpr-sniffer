@@ -1,5 +1,6 @@
 {
     "name": "itk-dev/cpr-validator",
+    "description": "Danish CPR validation library",
     "license": "MIT",
     "authors": [
         {
