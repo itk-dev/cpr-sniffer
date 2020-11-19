@@ -55,39 +55,39 @@ class CprValidator
      */
     public function checkCpr(string $cpr): bool
     {
-        if (empty($cpr)) {
-            return false;
-        }
+        if (!empty($cpr)) {
+            // Remove spaces and dashes to prepare for a simpler regex.
+            // This way we check 3 formats 1234561234, 123456-1234 and 123456 1234.
+            $stringConcatenated = str_replace(['-', ' '], '', $cpr);
 
-        // Remove spaces and dashes to prepare for a simpler regex.
-        // This way we check 3 formats 1234561234, 123456-1234 and 123456 1234.
-        $stringConcatenated = str_replace(['-', ' '], '', $cpr);
+            // Search the concatenated string for 10 digits in a row.
+            $numberFound = preg_match('/(^|\D)\d{10}($|\D)/', $stringConcatenated, $result);
 
-        // Search the concatenated string for 10 digits in a row.
-        $numberFound = preg_match('/(^|\D)\d{10}($|\D)/', $stringConcatenated, $result);
+            if ($numberFound) {
+                $number = $result[0];
 
-        if ($numberFound) {
-            $number = $result[0];
+                // Remove prefix from number.
+                if (!empty($result[1])) {
+                    $number = substr($number, 1);
+                }
 
-            // Remove prefix from number.
-            if (!empty($result[1])) {
-                $number = substr($number, 1);
-            }
+                // Remove suffix from number.
+                if (!empty($result[2])) {
+                    $number = substr($number, 0, -1);
+                }
 
-            // Remove suffix from number.
-            if (!empty($result[2])) {
-                $number = substr($number, 0, -1);
-            }
+                // Prepare number for modulo 11 check.
+                $arr = str_split($number);
 
-            // Prepare number for modulo 11 check.
-            $arr = str_split($number);
+                if ($this->mod11Chk($arr, $number) && $this->dateChk($number)) {
+                    return true;
+                }
 
-            if ($this->mod11Chk($arr, $number) && $this->dateChk($number)) {
-                return true;
-            } else {
                 return false;
             }
         }
+
+        return false;
     }
 
     /**
