@@ -1,5 +1,6 @@
 {
-    "name": "itk-dev/cpr-sniffer",
+    "name": "itk-dev/cpr-validator",
+    "description": "Danish CPR validation library",
     "license": "MIT",
     "authors": [
         {
@@ -9,18 +10,27 @@
     ],
     "autoload": {
         "psr-4": {
-            "ItkDev\\CprSniffer\\": "src/"
+            "ItkDev\\CprValidator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ItkDev\\Tests\\": "tests/"
         }
     },
     "require": {
-        "php": "^7.3"
+        "php": ">=7.4"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.15"
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "phpunit/phpunit": "^9.4"
     },
     "scripts": {
+        "phpunit": [
+            "./vendor/bin/phpunit"
+        ],
         "check-coding-standards/php-cs-fixer": [
-            "php-cs-fixer --config=.php_cs.dist fix --dry-run"
+            "php-cs-fixer --config=.php_cs.dist fix --dry-run --format=checkstyle"
         ],
         "check-coding-standards": [
             "@check-coding-standards/php-cs-fixer"
