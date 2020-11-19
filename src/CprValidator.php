@@ -110,6 +110,7 @@ class CprValidator
         // Modulo 11 weights for CPR: 4, 3, 2, 7, 6, 5, 4, 3, 2, 1
         $value = 0;
         foreach ($array as $key => $v) {
+            $v = intval($v);
             switch ($key) {
                 case 6:
                 case 0:
@@ -168,6 +169,6 @@ class CprValidator
         }
         $year = $prefix.$year;
 
-        return checkdate($month, $day, $year);
+        return checkdate(intval($month), intval($day), intval($year));
     }
 }

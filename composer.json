@@ -12,13 +12,22 @@
             "ItkDev\\CprValidator\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "ItkDev\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": "^7.4"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.15"
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "phpunit/phpunit": "^9.4"
     },
     "scripts": {
+        "phpunit": [
+            "./vendor/bin/phpunit"
+        ],
         "check-coding-standards/php-cs-fixer": [
             "php-cs-fixer --config=.php_cs.dist fix --dry-run"
         ],
