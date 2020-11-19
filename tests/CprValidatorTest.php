@@ -12,8 +12,20 @@ class CprValidatorTest extends TestCase
 {
     /**
      * Helper function to test private methods.
+     *
+     * @param $object
+     *   The object to invoke method on
+     * @param string $methodName
+     *   The name of the method to invoke on the object
+     * @param array $parameters
+     *   The parameter to invoke the method on the object with
+     *
+     * @return mixed
+     *   The result of the method
+     *
+     * @throws \ReflectionException
      */
-    private function invokeMethod(&$object, $methodName, array $parameters = array())
+    private function invokeMethod(&$object, string $methodName, array $parameters = [])
     {
         $reflection = new \ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
@@ -83,7 +95,8 @@ class CprValidatorTest extends TestCase
     /**
      * Test private 'mod11Chk' method.
      */
-    public function testPrivateMod11ChkMethod() {
+    public function testPrivateMod11ChkMethod()
+    {
         $cprValidator = new CprValidator();
         $this->assertTrue($cprValidator->checkCpr('191120-4009'));
         $this->assertTrue($this->invokeMethod($cprValidator, 'mod11Chk', [str_split('1911204009'), '1911204009']));
