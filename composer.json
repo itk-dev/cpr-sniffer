@@ -23,11 +23,15 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.15",
-        "phpunit/phpunit": "^9.4"
+        "phpunit/phpunit": "^9.4",
+        "vimeo/psalm": "^4.1"
     },
     "scripts": {
         "phpunit": [
             "./vendor/bin/phpunit"
+        ],
+        "psalm": [
+            "./vendor/bin/psalm --show-info=true"
         ],
         "check-coding-standards/php-cs-fixer": [
             "php-cs-fixer --config=.php_cs.dist fix --dry-run --format=checkstyle"

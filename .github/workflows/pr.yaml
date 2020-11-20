@@ -1,99 +1,130 @@
 on: pull_request
 name: Review
 jobs:
-    test-composer-install:
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                php: ['7.4', '8.0']
-        name: Validate composer (${{ matrix.php}})
-        steps:
-            - uses: actions/checkout@master
+  test-composer-install:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0' ]
+    name: Validate composer (${{ matrix.php}})
+    steps:
+      - uses: actions/checkout@master
 
-            - name: Setup PHP, with composer and extensions
-              uses: shivammathur/setup-php@v2
-              with:
-                php-version: ${{ matrix.php}}
-                tools: composer:v1
-                coverage: none
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php}}
+          tools: composer:v1
+          coverage: none
 
-            - name: Get composer cache directory
-              id: composer-cache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-            - uses: actions/cache@v1
-              with:
-                path: ${{ steps.composer-cache.outputs.dir }}
-                key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-                restore-keys: ${{ matrix.php }}-composer-
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ matrix.php }}-composer-
 
-            - name: Validate composer files
-              run: composer validate composer.json
+      - name: Validate composer files
+        run: composer validate composer.json
 
-            - name: Composer install
-              run: composer install
+      - name: Composer install
+        run: composer install
 
-    unit_tests:
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                php: ['7.4', '8.0']
-        name: Unit tests (${{ matrix.php}})
-        steps:
-            - uses: actions/checkout@master
+  unit_tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0' ]
+    name: Unit tests (${{ matrix.php}})
+    steps:
+      - uses: actions/checkout@master
 
-            - name: Setup PHP, with composer and extensions
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php}}
-                  tools: composer:v1
-                  coverage: none
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php}}
+          tools: composer:v1
+          coverage: none
 
-            - name: Get composer cache directory
-              id: composer-cache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-            - uses: actions/cache@v1
-              with:
-                  path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-                  restore-keys: ${{ matrix.php }}-composer-
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ matrix.php }}-composer-
 
-            - name: Install Dependencies
-              run: composer install
+      - name: Install Dependencies
+        run: composer install
 
-            - name: Unit tests
-              run: phpdbg -qrr ./vendor/bin/phpunit --coverage-clover=coverage/unit.xml
+      - name: Unit tests
+        run: phpdbg -qrr ./vendor/bin/phpunit --coverage-clover=coverage/unit.xml
 
-    phpcsfixer:
-        runs-on: ubuntu-latest
-        strategy:
-          fail-fast: false
-          matrix:
-            php: ['7.4', '8.0']
-        name: Coding style fixer (${{ matrix.php }})
-        steps:
-            - uses: actions/checkout@master
+  phpcsfixer:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0' ]
+    name: Coding style fixer (${{ matrix.php }})
+    steps:
+      - uses: actions/checkout@master
 
-            - name: Setup PHP, with composer and extensions
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php }}
-                  tools: composer:v1
-                  extensions: apcu, ctype, iconv, imagick, json, redis, soap, xmlreader, zip
-                  coverage: none
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v1
+          coverage: none
 
-            - name: Get composer cache directory
-              id: composer-cache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-            - uses: actions/cache@v1
-              with:
-                path: ${{ steps.composer-cache.outputs.dir }}
-                key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-                restore-keys: ${{ matrix.php }}-composer-
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ matrix.php }}-composer-
 
-            - name: Install Dependencies
-              run: composer install
+      - name: Install Dependencies
+        run: composer install
 
-            - name: phpcsfixerr
-              run: composer run check-coding-standards
+      - name: phpcsfixerr
+        run: composer run check-coding-standards
+
+  psalm:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0' ]
+    name: Static analysis (${{ matrix.php }})
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v1
+          coverage: none
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ matrix.php }}-composer-
+
+      - name: Install Dependencies
+        run: composer install
+
+      - name: Running analysis
+        run: composer run psalm
