@@ -2,23 +2,77 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of itk-dev/user-bundle.
- *
- * (c) 2019 ITK Development
- *
- * This source file is subject to the MIT license.
- */
-
 namespace ItkDev\CprValidator;
 
 /**
- * Class CprSniffer.
+ * Class CprValidator.
  *
- * Check a string for CPR resemblance.
+ * Validates and scans text for valid Danish CPR numbers.
  */
 class CprValidator
 {
+    /**
+     * Check if a string contains a CPR number.
+     */
+    public function containsCpr(string $text): bool
+    {
+        return !empty($this->extractCpr($text));
+    }
+
+    /**
+     * Extract all CPR numbers from a string.
+     */
+    public function extractCpr(string $text): array
+    {
+        $cprs = [];
+
+        // We assume that CPR numbers use only space and dash for formatting.
+        $pattern = '/(?<=^|\D)\d(?:[ -]?\d){9}(?=\D|$)/';
+
+        if (preg_match_all($pattern, $text, $matches)) {
+            foreach ($matches as $match) {
+                foreach ($match as $cpr) {
+                    if ($this->isCpr($cpr)) {
+                        $cprs[] = $cpr;
+                    }
+                }
+            }
+        }
+
+        return $cprs;
+    }
+
+    /**
+     * Check if a string is a valid CPR number.
+     */
+    public function isCpr(string $cpr): bool
+    {
+        // Remove space and dash.
+        $cpr = preg_replace('/[ -]/', '', $cpr);
+        // Check that the cpr consists of 10 decimal digits
+        // and contains a valid date
+        if (!preg_match('/^\d{10}$/', $cpr)
+            || !$this->hasValidDate($cpr)) {
+            return false;
+        }
+
+        // Check for numbers that does not have a valid modulo 11 control digit.
+        if (\in_array(substr($cpr, 0, 6), $this->noModuloCheckNumbers)) {
+            return true;
+        }
+
+        // Compute weighted sum.
+        $digits = array_map('intval', str_split($cpr));
+        $weights = [4, 3, 2, 7, 6, 5, 4, 3, 2, 1];
+        $weightedSum = 0;
+        foreach ($digits as $index => $digit) {
+            $weightedSum += $digit * $weights[$index];
+        }
+
+        // Check weighted sum.
+        return 0 === $weightedSum % 11;
+    }
+
     // Due to lacking capacity of valid modulo 11 numbers some years, there are
     // valid CPR numbers that don't pass modulo 11 check. In those cases we just
     // return true.
@@ -45,128 +99,37 @@ class CprValidator
     ];
 
     /**
-     * Check if string contains valid CPR.
+     * Check if string contains valid CPR number.
+     *
+     * @deprecated use CprValidator::containsCpr()
      *
      * @param string $cpr
      *   The string to check
      *
      * @return bool
-     *   True if string contains a number that could be considered cpr
+     *   True if string contains a number that could be a valid CPR number
      */
     public function checkCpr(string $cpr): bool
     {
-        if (!empty($cpr)) {
-            // Remove spaces and dashes to prepare for a simpler regex.
-            // This way we check 3 formats 1234561234, 123456-1234 and 123456 1234.
-            $stringConcatenated = str_replace(['-', ' '], '', $cpr);
-
-            // Search the concatenated string for 10 digits in a row.
-            $numberFound = preg_match('/(^|\D)\d{10}($|\D)/', $stringConcatenated, $result);
-
-            if ($numberFound) {
-                $number = $result[0];
-
-                // Remove prefix from number.
-                if (!empty($result[1])) {
-                    $number = substr($number, 1);
-                }
-
-                // Remove suffix from number.
-                if (!empty($result[2])) {
-                    $number = substr($number, 0, -1);
-                }
-
-                // Prepare number for modulo 11 check.
-                $arr = str_split($number);
-
-                if ($this->mod11Chk($arr, $number) && $this->dateChk($number)) {
-                    return true;
-                }
-
-                return false;
-            }
-        }
-
-        return false;
+        return $this->containsCpr($cpr);
     }
 
     /**
-     * Check against modulo 11.
+     * Check that a candidate CPR number contains a valid date.
      *
-     * @param array  $array
-     *   An array of characters
      * @param string $cpr
-     *   A string that could be a CPR number
-     *
-     * @return bool
-     *   True if the characters in union resemble a CPR number
-     */
-    private function mod11Chk(array $array, string $cpr): bool
-    {
-        if (\in_array(substr($cpr, 0, 6), $this->noModuloCheckNumbers)) {
-            return true;
-        }
-        // Check each digit against it's weight.
-        // Modulo 11 weights for CPR: 4, 3, 2, 7, 6, 5, 4, 3, 2, 1
-        $value = 0;
-        foreach ($array as $key => $v) {
-            $v = intval($v);
-            switch ($key) {
-                case 6:
-                case 0:
-                    $value += $v * 4;
-                    break;
-                case 7:
-                case 1:
-                    $value += $v * 3;
-                    break;
-                case 8:
-                case 2:
-                    $value += $v * 2;
-                    break;
-                case 3:
-                    $value += $v * 7;
-                    break;
-                case 4:
-                    $value += $v * 6;
-                    break;
-                case 5:
-                    $value += $v * 5;
-                    break;
-                case 9:
-                    $value += $v * 1;
-                    break;
-            }
-        }
-
-        // Check the sum against modulo 11, if remainder is 0 the number resembles CPR.
-        if (0 === $value % 11) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check against valid date.
-     *
-     * @param string $number
      *   A string that could be a CPR number
      *
      * @return bool return
      *   True if it's considered a date
      */
-    private function dateChk(string $number): bool
+    private function hasValidDate(string $cpr): bool
     {
-        $day = substr($number, 0, 2);
-        $month = substr($number, 2, 2);
-        $year = substr($number, 4, 2);
+        $day = substr($cpr, 0, 2);
+        $month = substr($cpr, 2, 2);
+        $year = substr($cpr, 4, 2);
 
-        if ($year < 21) {
-            $prefix = '20';
-        } else {
-            $prefix = '19';
-        }
+        $prefix = (int) $year < 21 ? '20' : '19';
         $year = $prefix.$year;
 
         return checkdate(intval($month), intval($day), intval($year));
