@@ -66,7 +66,7 @@ class CprValidator
         $weights = [4, 3, 2, 7, 6, 5, 4, 3, 2, 1];
         $weightedSum = 0;
         foreach ($digits as $index => $digit) {
-            $weightedSum += $digit * $weights[$index];
+            $weightedSum += $digit * ($weights[$index] ?? 0);
         }
 
         // Check weighted sum.

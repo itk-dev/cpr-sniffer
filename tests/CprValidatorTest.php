@@ -50,6 +50,16 @@ class CprValidatorTest extends TestCase
             ],
 
             [
+                '120206 5513',
+                false,
+            ],
+
+            [
+                '120206 5518',
+                true,
+            ],
+
+            [
                 'My phone number is +4512345678 and my username is 0101608787.',
                 true,
             ],

@@ -22,9 +22,9 @@
         "php": ">=7.4"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.15",
+        "friendsofphp/php-cs-fixer": "^3.1",
         "phpunit/phpunit": "^9.4",
-        "vimeo/psalm": "^4.1"
+        "vimeo/psalm": "^4.10"
     },
     "scripts": {
         "phpunit": [
@@ -34,13 +34,13 @@
             "./vendor/bin/psalm --show-info=true"
         ],
         "check-coding-standards/php-cs-fixer": [
-            "php-cs-fixer --config=.php_cs.dist fix --dry-run --format=checkstyle"
+            "php-cs-fixer fix --dry-run --format=checkstyle"
         ],
         "check-coding-standards": [
             "@check-coding-standards/php-cs-fixer"
         ],
         "apply-coding-standards/php-cs-fixer": [
-            "php-cs-fixer --config=.php_cs.dist fix"
+            "php-cs-fixer fix"
         ],
         "apply-coding-standards": [
             "@apply-coding-standards/php-cs-fixer"
